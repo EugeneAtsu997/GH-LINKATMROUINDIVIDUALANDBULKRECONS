@@ -35,7 +35,7 @@ namespace GH_LINK_ATM_ROU_INDIVIDUAL_AND_BULK_RECONS
                 string generatedJson = ConfigurationManager.AppSettings["generatedJson"];
                 string pivotInput = ConfigurationManager.AppSettings["pivotInput"];
                 string outputTemplate = ConfigurationManager.AppSettings["outputTemplate"];
-                string openItemsPath = ConfigurationManager.AppSettings["openItems"];
+                string openItemsPath = ConfigurationManager.AppSettings["openItemsInd"];
                 string source = ConfigurationManager.AppSettings["source"];
 
 
@@ -97,25 +97,32 @@ namespace GH_LINK_ATM_ROU_INDIVIDUAL_AND_BULK_RECONS
 
                     Console.WriteLine(fileName);
 
-                    UserFunctions.ReadJson(jsonInput, out ghLinkReports);
-                    Console.WriteLine("");
+                    
+
+                    if (fileName.Contains(StaticVariables.Ind242002104))
+                    {
+
+                        UserFunctions.ReadJson(jsonInput, out ghLinkReports);
+                        Console.WriteLine("");
+                        // Get Open Items
+                        UserFunctions.GetOpenItemsFile(openItemsPath, generatedJson, source, out openItems, out message);
+                        Console.WriteLine(message);
+
+                        // Merge Open items and new data
+                        UserFunctions.MergeOpenItemsNReport(ghLinkReports, openItems, out newGhLinkReports, out message);
+                        Console.WriteLine(message);
+
+                        UserFunctions.GetReconKey(newGhLinkReports, out ghLinkInd, out message);
+                        Console.WriteLine(message);
+
+                        UserFunctions.WriteToExcelSheet(new List<string> { JsonConvert.SerializeObject(ghLinkInd) }, outputTemplate, pivotInput, StaticVariables.SHEET1, StaticVariables.PIVOTDATA, out message);
+                        Console.WriteLine(message);
+                    }
 
 
                 }
 
-                // Get Open Items
-                UserFunctions.GetOpenItemsFile(openItemsPath, generatedJson, source, out openItems, out message);
-                Console.WriteLine(message);
-
-                // Merge Open items and new data
-                UserFunctions.MergeOpenItemsNReport(ghLinkReports, openItems, out newGhLinkReports, out message);
-                Console.WriteLine(message);
-
-                UserFunctions.GetReconKey(newGhLinkReports, out ghLinkInd, out message);
-                Console.WriteLine(message);
-
-                UserFunctions.WriteToExcelSheet(new List<string> { JsonConvert.SerializeObject(ghLinkInd) }, outputTemplate, pivotInput, StaticVariables.SHEET1, StaticVariables.PIVOTDATA, out message);
-                Console.WriteLine(message);
+                
             }
             catch (Exception ex)
             {
@@ -128,7 +135,7 @@ namespace GH_LINK_ATM_ROU_INDIVIDUAL_AND_BULK_RECONS
             Console.WriteLine("");
             Console.WriteLine("Process Completed @ " + DateTime.Now);
 
-            Thread.Sleep(150000);
+            Thread.Sleep(1500);
         }
     }
 }

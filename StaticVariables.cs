@@ -15,5 +15,7 @@ namespace GH_LINK_ATM_ROU_INDIVIDUAL_AND_BULK_RECONS
         public static string NEGATIVE = "-";
         public static string D = "D";
         public static string C = "C";
+        public static string Ind242002104 = "GHLINK ROU_242002104";
+        public static string Bulk242002105 = "GH-LINK BULK_242002105";
     }
 }

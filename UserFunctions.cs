@@ -17,6 +17,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Runtime.InteropServices.ComTypes;
 
 namespace GH_LINK_ATM_ROU_INDIVIDUAL_AND_BULK_RECONS
 {
@@ -445,8 +446,15 @@ namespace GH_LINK_ATM_ROU_INDIVIDUAL_AND_BULK_RECONS
 
             try
             {
-                UserFunctions.SplitWrkBk(openItemsPath, StaticVariables.OPENITEMS, source);
+                string fileNam = string.Empty;
+                //Delete files in source folder
+                string[] sourcefolder = Directory.GetFiles(source);
+                foreach (var sourcefile in sourcefolder)
+                {
+                    File.Delete(sourcefile);
+                }
 
+                UserFunctions.SplitWrkBk(openItemsPath, StaticVariables.OPENITEMS, source);
                 if (!UserFunctions.ReadAllFiles(source, out List<string> filePath1, "xlsx"))
                 {
                     Console.WriteLine("No data found in source Path");
@@ -473,7 +481,7 @@ namespace GH_LINK_ATM_ROU_INDIVIDUAL_AND_BULK_RECONS
 
                         Task.Factory.StartNew(() => UserFunctions.WriteLog(" ", fileName, "Data read from " + item1 + " successfully", ConfigurationManager.AppSettings["ApplicationName"], string.Format("{0}.{1}", MethodBase.GetCurrentMethod().DeclaringType.FullName, MethodBase.GetCurrentMethod().Name)));
 
-                        //UserFunctions.MoveFile(item, workbookDone + Path.GetFileName(item));
+
 
                         Thread.Sleep(1500);
 
@@ -488,6 +496,16 @@ namespace GH_LINK_ATM_ROU_INDIVIDUAL_AND_BULK_RECONS
 
                     UserFunctions.ReadJsonOne(jsonInput, out openItems);
 
+
+                }
+
+                
+
+                //Delete files in source folder
+                sourcefolder = Directory.GetFiles(source);
+                foreach (var sourcefile in sourcefolder)
+                {
+                    File.Delete(sourcefile);
                 }
 
 

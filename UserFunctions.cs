@@ -376,6 +376,8 @@ namespace GH_LINK_ATM_ROU_INDIVIDUAL_AND_BULK_RECONS
                 // Access the last element of the array
                 result = parts[parts.Length - 1];
 
+                result = Regex.Match(result, @"\d+").Value;
+
 
                 reconsKey = result;
 
